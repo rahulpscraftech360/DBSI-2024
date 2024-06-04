@@ -20,7 +20,7 @@ const corsOptions = {
     "https://dbsi-3ce7f.web.app/",
     "https://fir-deploy-98038.web.app",
     "https://fir-deploy-98038.firebaseapp.com",
-    "http://localhost:5173",
+    "http://localhost:3001",
   ], // Replace "*" with the appropriate origin or origins of your frontend application
   methods: "GET, POST, PUT, DELETE",
   allowedHeaders: "Content-Type, Authorization",
@@ -166,8 +166,14 @@ app.post('/api/getDrinkCount', async (req, res) => {
   
       if (user && !user.invalidQR) {
         const previousCount = user.count; //initaly its zero
-        const newCount=user.count+1
-        const remainingCount = 4- newCount; //total four
+        var newCount;
+        if(previousCount===4){
+          newCount=user.count
+        }else{
+          newCount=user.count+1
+        }
+      
+        const remainingCount = 4- previousCount; //total four
   
         if (remainingCount >= 0) {
           await User.updateOne({ uniqueCode }, { $set: { count: newCount } });

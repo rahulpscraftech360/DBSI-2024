@@ -7,7 +7,11 @@ import backgroundImage from "/src/assets/images/KV 1.png"
 import logo from "/src/assets/images/Diageo Logo 1.png" 
 import nodrink from "/src/assets/images/nodrink.png" 
 import animation from "/src/assets/images/animationData.json" 
-import error from "/src/assets/images/error.png" 
+import errorImage from "/src/assets/images/error.png" 
+import image4 from "/src/assets/images/4drinks.png"
+import image3 from "/src/assets/images/3drinks.png"
+import image2 from "/src/assets/images/2drinks.png"
+import image1 from "/src/assets/images/1drink.png"
 
 import { Button } from "@/components/ui/button"
 import axios from 'axios';
@@ -15,23 +19,26 @@ import { useNavigate } from 'react-router-dom';
 
 export default function DrinkQRScanner() {
   const [showScanner, setShowScanner]=useState(true)
+  const naviagate=useNavigate()
   const [data, setData] = useState();
   const [success, setSuccess]=useState(null);
   const [error, setError] = useState();
-  const[showDrinkCount,setShowDrinkCount]=useState(false)
+  const[showDrinkCount,setShowDrinkCount]=useState()
   const [count, setCount] = useState();
-  // const toggleFullSceen = () => {
-  //   if (!document.fullscreenElement) {
-  //     console.log(document.documentElement.requestFullscreen());
-  //     document.documentElement.requestFullscreen();
-  //     setFullscreen(true);
-  //   } else {
-  //     if (document.exitFullscreen) {
-  //       document.exitFullscreen();
-  //       setFullscreen(false);
-  //     }
-  //   }
-  // };
+  const [fullscreen, setFullscreen] = useState(false);
+  
+  const toggleFullSceen = () => {
+    if (!document.fullscreenElement) {
+      console.log(document.documentElement.requestFullscreen());
+      document.documentElement.requestFullscreen();
+      setFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setFullscreen(false);
+      }
+    }
+  };
   const fetchUserCount = async (uniqueCode) => {
     const uniqueCodeString = String(uniqueCode).trim();
   try {
@@ -50,6 +57,7 @@ export default function DrinkQRScanner() {
       setError(response.data.message); // Set the error message received from the server
       setShowScanner(false);
       setData(null);
+      console.log("here")
       setShowDrinkCount(true); // Set showDrinkCount to true to display the "No More Drinks Left" message
       return;
     
@@ -61,21 +69,19 @@ export default function DrinkQRScanner() {
   }
 };
 
-  // useEffect(() => {
-   
-  //   setTimeout(() => {
-  //       setShowDrinkCount(false)
-  //       setCount(null)
-  //       setSuccess(null)
-  //       setError('')
-  //       setShowScanner(true)
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setShowDrinkCount(false);
+    setCount(null);
+    setSuccess(null);
+    setError('');
+    setShowScanner(true);
+    console.log("timeover");
+  }, 5000);
 
-  //   }, 3000);
-
-   
-  
-   
-  // }, [showDrinkCount])
+  // Cleanup the timeout if the component unmounts or showDrinkCount changes
+  return () => clearTimeout(timer);
+}, [showDrinkCount]);
 
   
   useEffect(() => {
@@ -88,7 +94,23 @@ export default function DrinkQRScanner() {
     }
    
   }, [data])
-  const naviagate=useNavigate()
+ 
+  const getImage = (count) => {
+    switch (count) {
+      case 0:
+        return <img alt="Logo" height="40" style={{ objectFit: 'cover' }} width="240" className="mb-6" src={nodrink}  />;
+      case 1:
+        return <img alt="Image 1" src={image1}  height="40" style={{ objectFit: 'cover' }} width="240" className="mb-6"  />;
+      case 2:
+        return <img alt="Image 2" src={image2} height="40" style={{ objectFit: 'cover' }} width="240" className="mb-6" />;
+      case 3:
+        return <img alt="Image 3" src={image3} height="40" style={{ objectFit: 'cover' }} width="240" className="mb-6" />;
+      case 4:
+        return <img alt="Image 4" src={image4} height="40" style={{ objectFit: 'cover' }} width="240" className="mb-6" />;
+      default:
+        return null;
+    }
+  };
   return (
       // <img className="w-[210px] h-[130px] pb-5 p-3 z-10 " src={logo} alt="Image Description"/>
     <div  style={{
@@ -98,12 +120,12 @@ export default function DrinkQRScanner() {
       backgroundSize: "cover",
       justifyContent: "center",
     }} className=" relative flex flex-col items-center justify-center h-screen ">
-       <button onClick={() => naviagate('/')} className="absolute top-0 w-[210px] h-[130px] pb-5 p-3 z-10 " > <img  src={logo} alt="Image Description"/></button>
+       <button onClick={() => naviagate('/')} className="absolute top-0 w-[210px] h-[130px] pb-5  z-10 " > <img  src={logo} alt="Image Description"/></button>
      <div className='flex flex-col items-center justify-center'>  
-     <h2 className="text-3xl font-bold tracking-tight text-white pb-5">Drink Scanner</h2>
+     <h2  onClick={() => toggleFullSceen()}  className="text-3xl font-bold tracking-tight text-white pb-5 ">Drink Scanner</h2>
         
       {!showDrinkCount ? (
-        <div className=" p-20 flex flex-start  bg-white rounded-3xl bg-opacity-20 backdrop-filter backdrop-blur-sm  w-[500px]  h-[800px] justify-center items-center">
+        <div className=" p-20 flex flex-start  bg-white bg-opacity-20 backdrop-blur-lg shadow-lg rounded-3xl backdrop-filter border-opacity-30 w-[500px]  h-[800px] justify-center items-center">
           <div className="flex flex-col ">
             <div className=" aspect-square bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center">
               {/* <QrCodeIcon className="w-16 h-16 text-gray-500 dark:text-gray-400" /> */}
@@ -181,27 +203,27 @@ export default function DrinkQRScanner() {
         <div className=" flex  flex-col  justify-center items-center  w-[500px]  h-[800px]   p-10 mx-10 bg-white rounded-xl bg-opacity-20 backdrop-filter backdrop-blur-sm  ">
         <div className="flex  w-full flex-col p-4 text-center justify-center items-center  md:p-16">
         
-        {count === 0 ? (<h2 className="flex flex-col h-ful w-full justify-center  items-center text-center text-3xl text-white ">
-            <img
+        {count ? (
+        <h2 className="flex flex-col h-ful w-full justify-center  items-center text-center text-3xl text-white ">
+           {getImage(count)} </h2>) :
+         (
+         <h2 className="flex flex-col h-ful w-full justify-center  items-center text-center text-3xl text-white ">
+            {!error ? (<img
               alt="Logo"
               height="40"
-              src={nodrink}
+              src= {nodrink}
               style={{
               
                 objectFit: "cover",
               }}
-              width="120"
+              width="240"
               className='mb-6'
-            />  </h2>) :
-         (<h2 className="flex flex-col h-ful w-full justify-center  items-center text-center text-3xl text-white ">
-            <Player
-  src={animation}
-  className="player"
-  loop
-  autoplay
-/> </h2>)}
+            />):(<> <img className='w-[150px] h-[150px]' src={errorImage} alt="Image Description"/> </>)}  </h2>)}
               <h2 className="flex flex-col h-ful w-full justify-center  items-center text-center text-3xl text-white "> {count === 0 ? "NO DRINKS LEFT" : (count === 1 ? "1 DRINK LEFT" : (count != null && count <= 4 ? `${count} DRINKS LEFT` : null))}</h2>
-         
+              {!error ? (<p className="text-white dark:text-white text-2xl flex flex-col justify-center items-center gap-5 mt-5">   Stay Hydrated at all times! </p>):<></>}
+             
+             
+            
 
 </div>
           {/* <span className="mt-4 text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 sm:text-[200px] md:text-[250px]">

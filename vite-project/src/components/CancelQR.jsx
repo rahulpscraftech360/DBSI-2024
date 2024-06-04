@@ -14,6 +14,20 @@ const [uniqueCode, setUniqueCode]=useState()
 const [error, setError] = useState('');
 const [success, setSuccess] = useState();
 const navigate=useNavigate()
+const [fullscreen, setFullscreen] = useState(false);
+
+const toggleFullSceen = () => {
+  if (!document.fullscreenElement) {
+    console.log(document.documentElement.requestFullscreen());
+    document.documentElement.requestFullscreen();
+    setFullscreen(true);
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+      setFullscreen(false);
+    }
+  }
+};
 const cancelQrcode = async (uniqueCode) => {
   const uniqueCodeString = String(uniqueCode).trim();
   try {
@@ -65,7 +79,7 @@ useEffect(() => {
     }}
     className="relative flex flex-col items-center justify-center h-screen w-full bg-gray-100 dark:bg-gray-900"
   ><button onClick={() => navigate('/')} className="absolute top-0 w-[210px] h-[130px] pb-5 p-3 z-10 " > <img  src={logo} alt="Image Description"/></button>
-      <h2 className="text-3xl font-bold tracking-tight text-white pb-5">Cancel QR Code</h2>
+      <h2 onClick={() => toggleFullSceen()} className="text-3xl font-bold tracking-tight text-white pb-5">Cancel QR Code</h2>
      
       <div className= "h-[700px] bg-white  bg-opacity-20 backdrop-filter backdrop-blur-sm text-white  rounded-3xl p-5 mx-4 w-full max-w-md space-y-4 flex flex-col items-center">
     

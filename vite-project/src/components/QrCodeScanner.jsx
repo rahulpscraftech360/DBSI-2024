@@ -56,7 +56,20 @@ export default function QrCodeScanner() {
   const[user,setUser]=useState(null);
   const [error, setError] = useState();
   const[showWelcome,setShowWelcome]=useState(false)
-
+  const [fullscreen, setFullscreen] = useState(false);
+ 
+  const toggleFullSceen = () => {
+    if (!document.fullscreenElement) {
+      console.log(document.documentElement.requestFullscreen());
+      document.documentElement.requestFullscreen();
+      setFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setFullscreen(false);
+      }
+    }
+  };
   console.log("error",error)
   const handleGetUser = async (uniqueCode) => {
     const uniqueCodeString = String(uniqueCode).trim();
@@ -90,13 +103,14 @@ export default function QrCodeScanner() {
     }
   };
  const naviagate=useNavigate()
-//   useEffect(() => {
+  useEffect(() => {
    
-//     setTimeout(() => {
-//       setShowWelcome(false)
-//       setError();
-//     }, 3000);
-//   }, [showWelcome,error])
+    setTimeout(() => {
+      setShowWelcome(false)
+      setError();
+      setShowScanner(true);
+    }, 5000);
+  }, [showWelcome,error])
 
   
   useEffect(() => {
@@ -118,7 +132,7 @@ export default function QrCodeScanner() {
       backgroundSize: "cover",
       justifyContent: "center",
     }} className="relative flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-gray-950">
-      <div className="hidden sm:flex w-full justify-start">
+      <div className="hidden sm:flex w-full justify-start ">
             {/* <button
               className="py-2 mt-5 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-lime-400 hover:bg-lime-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
               onClick={() => naviagate('/')}
@@ -127,11 +141,11 @@ export default function QrCodeScanner() {
             </button> */}
           </div>
           <button onClick={() => naviagate('/')} className="absolute top-0 w-[210px] h-[130px] pb-5 p-3 z-10 " > <img  src={logo} alt="Image Description"/></button>
-          <h2 className="text-3xl font-bold tracking-tight text-white pb-5 md:pt-10 ">Welcome Scanner</h2>
+          <h2  onClick={() => toggleFullSceen()} className="text-3xl font-bold tracking-tight text-white pb-5 md:mt-14 md:pt-10 ">Welcome Scanner</h2>
       {/* {error && (
         <p className="mt-4 text-red-500 text-center font-bold">{error}</p>
       )} */}
-     {!showWelcome ? (<div className="  w-[500px]  h-[800px]  max-w-md p-10 mx-10 bg-white rounded-xl bg-opacity-20 backdrop-filter backdrop-blur-sm flex flex-col justify-center items-center">
+     {!showWelcome ? (<div className="  w-[500px]  h-[800px]  max-w-md p-10 mx-10  bg-white rounded-xl bg-opacity-20 backdrop-filter backdrop-blur-sm flex flex-col justify-center items-center">
    
         <div className="">
           <div className="aspect-square bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center">
@@ -171,7 +185,7 @@ export default function QrCodeScanner() {
       </div>):
       //showing welcome screen
       ( <div className=" w-[500px]  h-[800px] flex gap-2 max-w-md p-10 mx-10 bg-white rounded-xl bg-opacity-20 backdrop-filter backdrop-blur-sm">
-      <div className="w-full flex flex-col  justify-center items-center gap-5">
+      <div className="w-full flex flex-col  justify-center items-center gap-5 ">
       
      
         {/* <p className="text-lg text-gray-600 dark:text-gray-400">June 15-17, 2023 | San Francisco, CA</p> */}
