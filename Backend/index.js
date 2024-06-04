@@ -20,7 +20,7 @@ const corsOptions = {
     "https://dbsi-3ce7f.web.app/",
     "https://fir-deploy-98038.web.app",
     "https://fir-deploy-98038.firebaseapp.com",
-    "http://localhost:3001",
+    "http://localhost:5000",
   ], // Replace "*" with the appropriate origin or origins of your frontend application
   methods: "GET, POST, PUT, DELETE",
   allowedHeaders: "Content-Type, Authorization",
